@@ -17,7 +17,11 @@ namespace bustub {
 /** @brief Parameterized constructor. */
 template <typename KeyType>
 HyperLogLog<KeyType>::HyperLogLog(int16_t n_bits) : cardinality_(0),
-    initial_bits(n_bits), msb(63),register_num(1 << n_bits), left_most_posi(0){
+    initial_bits(n_bits), msb(63), left_most_posi(0){
+      if(initial_bits < 0) {
+        initial_bits = 0;
+      }
+      register_num = (1 << initial_bits);
       register_m = std::vector<uint64_t>(register_num,0);
     }
 
@@ -95,6 +99,7 @@ auto HyperLogLog<KeyType>::AddElem(KeyType val) -> void {
 template <typename KeyType>
 auto HyperLogLog<KeyType>::ComputeCardinality() -> void {
   /** @TODO(student) Implement this function! */
+  if(initial_bits < 0 ) return;
   double sum = 0;
   for(size_t j=0;j<register_num;j++){
     sum += 1.0 / (1UL << register_m[j]);
